@@ -7,20 +7,29 @@
 #include <fstream>
 #include<iostream>
 #include<cmath>
+#include "readfile.hpp"
 //#define readavn
-//#define AVCID MD2
-#define LOG_D(...)  __android_log_print(ANDROID_LOG_DEBUG, "poi", __VA_ARGS__)
+//#define AVCID MD2(void){
+//
+//
+//return 1;
+//};
+#define LOG_D(...)  __android_log_print(ANDROID_LOG_DEBUG, "poi native-lib", __VA_ARGS__)
 //使用巨集來呼叫日誌庫
-
+void checkmd2(char *);
 void writeMD2();
 void writeAVN();
 void writesystemAVN();
+static int avnid=0;
+int globalId=0;
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_rextron_jnireadfile_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
-
+    //Avcid avcid;
+    writefileMD2();
+//    writefileAVN();
 //    LOG_D("poi WRITE");
 //    FILE* file = NULL;
 //    file = fopen("/data/data/com.rextron.jnireadfile/sku_id.txt","w");    //建立檔案
@@ -52,23 +61,30 @@ Java_com_rextron_jnireadfile_MainActivity_stringFromJNI(
         if ((value[0] == 'A' && value[1] == 'V')
             && (value[2] == 'N' )){
             LOG_D("AVN check value:%s",value);
-            #define AVCIDAVN 1
-//#define AVCIDMD2
+            avnid=1;
         }
         if ((value[0] == 'M' && value[1] == 'D')
             && (value[2] == '2' )){
             LOG_D("MD2 check value:%s",value);
-//            #define AVCIDMD2
-            #define AVCIDAVN 0
+            //#define AVCIDAVN 0
+            //#undef AVCIDAVN
         }
+
     } else {
         LOG_D("Can not open file\n");
     }
-    #if  AVCIDAVN==0
-    LOG_D("AVCIDAVN  0");
-    #else
-        LOG_D("read MD2 ");
-    #endif
+//if(avnid)
+//    LOG_D("AVCIDAVN  1");
+//    #if  AVCIDAVN
+//    LOG_D("AVCIDAVN  1");
+//    #else
+//        LOG_D("AVCIDAVN  0");
+//    #endif
+    if(globalId==1){
+        LOG_D("native-lib globalId  1");
+    }else{
+        LOG_D("native-lib globalId  0");
+    }
     return env->NewStringUTF(hello.c_str());
    // return env->NewStringUTF(buffer);
 }
@@ -103,4 +119,7 @@ void writesystemAVN(){//need root
     }
     fwrite("AVN",3,1,file);            //往檔案中寫檔案
     fclose(file);                    //關閉檔案
+}
+void checkmd2(char *value){
+
 }
